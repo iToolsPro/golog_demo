@@ -1,4 +1,4 @@
-module golog
+module github.com/iToolsPro/golog_demo
 
 go 1.15
 
