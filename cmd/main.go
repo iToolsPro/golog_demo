@@ -17,6 +17,7 @@ func main() {
 	total, numBars := 100, 1
 	for i := 0; i < numBars; i++ {
 		name := fmt.Sprintf("Bar#%d:", i)
+
 		bar := vars.ProcessBar.AddBar(int64(total),
 			mpb.BarNoPop(),
 			mpb.PrependDecorators(
@@ -37,10 +38,10 @@ func main() {
 				// start variable is solely for EWMA calculation
 				// EWMA's unit of measure is an iteration's duration
 				start := time.Now()
-				elog.Info(fmt.Sprintf("hey i start~ %d", i))
-				time.Sleep(time.Duration(rng.Intn(10)+1) * max / 10)
 				elog.Warn(fmt.Sprintf("hey i start~ %d", i))
-				elog.Error(fmt.Sprintf("hey i start~ %d", i))
+				time.Sleep(time.Duration(rng.Intn(10)+1) * max / 10)
+				//elog.Warn(fmt.Sprintf("hey i start~ %d", i))
+				//elog.Error(fmt.Sprintf("hey i start~ %d", i))
 				bar.Increment()
 				// we need to call DecoratorEwmaUpdate to fulfill ewma decorator's contract
 				bar.DecoratorEwmaUpdate(time.Since(start))

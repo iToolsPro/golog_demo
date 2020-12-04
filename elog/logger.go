@@ -6,6 +6,7 @@ import (
 	"github.com/k0kubun/go-ansi"
 	"github.com/op/go-logging"
 	"github.com/sirupsen/logrus"
+	"github.com/vbauerster/mpb/v5"
 	"github.com/vbauerster/mpb/v5/decor"
 	"golog/vars"
 	"io"
@@ -41,8 +42,8 @@ type LogFiller struct {
 }
 
 func NewFiller(record *logging.Record) *LogFiller {
-	return &LogFiller{msg: toMsg(record)}
-
+	msg := toMsg(record)
+	return &LogFiller{msg: msg}
 }
 func toMsg(record *logging.Record) string {
 	buf := new(bytes.Buffer)
@@ -51,9 +52,8 @@ func toMsg(record *logging.Record) string {
 }
 
 func (f *LogFiller) Fill(w io.Writer, _ int, st decor.Statistics) {
-	fmt.Fprint(w, f.msg)
-	//data = f.Message()
-
+	limit := "%%.%ds"
+	fmt.Fprintf(w, fmt.Sprintf(limit, st.AvailableWidth), f.msg)
 }
 
 func makeLogBar(msg string) {
@@ -74,7 +74,7 @@ func LogWithLevel(msg string, level logging.Level) {
 		Args:  []interface{}{msg},
 		Level: level,
 	}
-	vars.ProcessBar.Add(0, NewFiller(record)).SetTotal(0, true)
+	vars.ProcessBar.Add(0, NewFiller(record), mpb.TrimSpace()).SetTotal(0, true)
 }
 func Info(msg string) {
 	LogWithLevel(msg, logging.INFO)
